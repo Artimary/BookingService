@@ -1,10 +1,6 @@
 name: Android CI
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push]
 
 jobs:
   build:
@@ -26,6 +22,9 @@ jobs:
       - name: Accept licenses
         run: |
           yes | sdkmanager --licenses || true
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
 
       - name: Build with Gradle
         run: ./gradlew build
