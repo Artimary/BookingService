@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         // Настройка OkHttpClient с интерсептором для JWT-токена
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor { chain: Interceptor.Chain ->
-                val token = getSharedPreferences("auth", Context.MODE_PRIVATE)
+                val token = getSharedPreferences("auth", MODE_PRIVATE)
                     .getString("jwt_token", null)
                 val request = chain.request().newBuilder()
                     .apply {
@@ -52,9 +52,9 @@ class MainActivity : ComponentActivity() {
             }
             .build()
 
-        // Настройка Retrofit для локального бэкенда
+        // Настройка Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://158.160.137.7:8080/api/") // Локальный URL для эмулятора
+            .baseUrl("http://51.250.89.156:8080/api/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
