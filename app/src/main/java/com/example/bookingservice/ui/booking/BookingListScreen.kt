@@ -1,0 +1,112 @@
+package com.example.bookingservice.ui.booking
+
+import android.util.Log
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.bookingservice.viewmodel.AuthViewModel
+import com.example.bookingservice.viewmodel.BookingViewModel
+
+@Composable
+fun BookingListScreen(
+    userId: String,
+    viewModel: BookingViewModel = viewModel(),
+    authViewModel: AuthViewModel, // Добавлен параметр
+    onCreateBookingClick: () -> Unit,
+    onLogout: () -> Unit // Добавлен параметр
+) {
+    val bookings by viewModel.bookings.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val error by viewModel.error.collectAsStateWithLifecycle()
+    val authError by authViewModel.error.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = userId) {
+        Log.d("BookingListScreen", "Loading bookings for userId=$userId")
+        viewModel.loadBookings(userId)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Your Bookings",
+            style = MaterialTheme.typography.headlineMedium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        when {
+            isLoading -> {
+                Log.d("BookingListScreen", "Showing loading indicator")
+                CircularProgressIndicator()
+            }
+            error != null -> {
+                Log.d("BookingListScreen", "Error: $error")
+                Text(
+                    text = error!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            bookings == null -> {
+                Log.d("BookingListScreen", "Bookings is null")
+                Text("Bookings data not loaded")
+            }
+            bookings?.isEmpty() == true -> {
+                Log.d("BookingListScreen", "Bookings is empty")
+                Text("No bookings found for user $userId")
+            }
+            else -> {
+                Log.d("BookingListScreen", "Bookings size=${bookings?.size}")
+                bookings?.forEach { booking ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text("Room: ${booking.roomId}")
+                            Text("Time: ${booking.startTime} to ${booking.endTime}")
+                            Text("Status: ${booking.status}")
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = onCreateBookingClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Create New Booking")
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = {
+                authViewModel.logout()
+                onLogout()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Logout")
+        }
+
+        if (authError != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = authError!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
