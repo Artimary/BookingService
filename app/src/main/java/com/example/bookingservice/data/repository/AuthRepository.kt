@@ -20,9 +20,9 @@ open class AuthRepository(
                     val authResponse = response.body()!!
                     context.getSharedPreferences("auth", Context.MODE_PRIVATE)
                         .edit()
-                        .putString("jwt_token", authResponse.token)
+//                        .putString("jwt_token", authResponse.token)
                         .apply()
-                    Result.success(authResponse.user)
+                    Result.success(authResponse)
                 } else {
                     Result.failure(Exception(response.errorBody()?.string() ?: "Login failed"))
                 }
@@ -40,9 +40,9 @@ open class AuthRepository(
                     val authResponse = response.body()!!
                     context.getSharedPreferences("auth", Context.MODE_PRIVATE)
                         .edit()
-                        .putString("jwt_token", authResponse.token)
+//                        .putString("jwt_token", authResponse.token)
                         .apply()
-                    Result.success(authResponse.user)
+                    Result.success(authResponse)
                 } else {
                     Result.failure(Exception(response.errorBody()?.string() ?: "Signup failed"))
                 }

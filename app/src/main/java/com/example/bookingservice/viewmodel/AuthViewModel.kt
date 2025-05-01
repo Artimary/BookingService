@@ -25,13 +25,13 @@ class AuthViewModel(
     private val _registrationSuccess = MutableStateFlow(false)
     val registrationSuccess: StateFlow<Boolean> = _registrationSuccess.asStateFlow()
 
-    fun login(email: String, password: String) {
+    fun login(username: String, password: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-            Log.d("AuthViewModel", "Starting login request with email=$email")
+            Log.d("AuthViewModel", "Starting login request with email=$username")
             try {
-                val result = repository.login(email, password)
+                val result = repository.login(username, password)
                 _isLoading.value = false
                 if (result.isSuccess) {
                     _user.value = result.getOrNull() as User?

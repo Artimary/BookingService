@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         // Настройка OkHttpClient с интерсептором для JWT-токена
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor { chain: Interceptor.Chain ->
-                val token = getSharedPreferences("auth", MODE_PRIVATE)
+                val token = getSharedPreferences("auth", Context.MODE_PRIVATE)
                     .getString("jwt_token", null)
                 val request = chain.request().newBuilder()
                     .apply {

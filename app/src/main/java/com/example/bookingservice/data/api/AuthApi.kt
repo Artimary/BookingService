@@ -10,13 +10,13 @@ data class AuthResponse(val user: User, val token: String)
 
 interface AuthApi {
     @POST("auth/login")
-    suspend fun login(@Body request: LoginRequest): Response<AuthResponse>
+    suspend fun login(@Body request: LoginRequest): Response<User>
 
     @POST("auth/register")
     suspend fun register(@Body request: LoginRequest): Response<User>
 
     @POST("auth/signup")
-    suspend fun signup(@Body request: SignupRequest): Response<AuthResponse>
+    suspend fun signup(@Body request: SignupRequest): Response<User>
 
     @GET("auth/logout")
     suspend fun logout(): Response<Unit>
