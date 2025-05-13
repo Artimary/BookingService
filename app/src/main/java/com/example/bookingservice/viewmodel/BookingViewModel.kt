@@ -8,22 +8,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class BookingViewModel(
+open class BookingViewModel(
     private val repository: BookingRepository
 ) : ViewModel() {
     private val _bookings = MutableStateFlow<List<Booking>?>(null)
-    val bookings: StateFlow<List<Booking>?> = _bookings
+    open val bookings: StateFlow<List<Booking>?> = _bookings
 
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+    open val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error
+    open val error: StateFlow<String?> = _error
 
     private val _bookingSuccess = MutableStateFlow(false)
-    val bookingSuccess: StateFlow<Boolean> = _bookingSuccess
+    open val bookingSuccess: StateFlow<Boolean> = _bookingSuccess
 
-    fun loadBookings(userId: String) {
+    open fun loadBookings(userId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -37,7 +37,7 @@ class BookingViewModel(
         }
     }
 
-    fun createBooking(userId: String, roomId: String, startTime: String, endTime: String) {
+    open fun createBooking(userId: String, roomId: String, startTime: String, endTime: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -53,5 +53,20 @@ class BookingViewModel(
 
     fun resetBookingSuccess() {
         _bookingSuccess.value = false
+    }
+
+    open fun deleteBooking(id: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            val result = repository.deleteBooking(id)
+            _isLoading.value = false
+            if (result.isSuccess) {
+                // Обновляем список после удаления
+                loadBookings("") // Можно передать userId, если он доступен
+            } else {
+                _error.value = result.exceptionOrNull()?.message ?: "Failed to delete booking"
+            }
+        }
     }
 }

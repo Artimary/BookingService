@@ -46,4 +46,19 @@ class BookingRepository(
             }
         }
     }
+
+    suspend fun deleteBooking(id: String): Result<Booking> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = bookingApi.deleteBooking(id)
+                if (response.isSuccessful && response.body() != null) {
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Exception(response.errorBody()?.string() ?: "Failed to delete booking"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
 }

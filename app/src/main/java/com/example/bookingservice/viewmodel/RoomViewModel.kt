@@ -8,19 +8,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RoomViewModel(
+open class RoomViewModel(
     private val repository: RoomRepository
 ) : ViewModel() {
     private val _rooms = MutableStateFlow<List<Room>?>(null)
-    val rooms: StateFlow<List<Room>?> = _rooms
+    open val rooms: StateFlow<List<Room>?> = _rooms
 
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+    open val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error
+    open val error: StateFlow<String?> = _error
 
-    fun loadRooms(buildingId: String) {
+    open fun loadRooms(buildingId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null

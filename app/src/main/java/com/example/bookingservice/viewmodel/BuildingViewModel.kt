@@ -8,19 +8,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class BuildingViewModel(
+open class BuildingViewModel(
     private val repository: BuildingRepository
 ) : ViewModel() {
     private val _buildings = MutableStateFlow<List<Building>?>(null)
-    val buildings: StateFlow<List<Building>?> = _buildings
+    open val buildings: StateFlow<List<Building>?> = _buildings
 
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+    open val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error
+    open val error: StateFlow<String?> = _error
 
-    fun loadBuildings() {
+    open fun loadBuildings() {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null

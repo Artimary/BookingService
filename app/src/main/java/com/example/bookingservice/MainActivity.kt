@@ -71,13 +71,16 @@ class MainActivity : ComponentActivity() {
         val buildingRepository = BuildingRepository(buildingApi)
         val roomRepository = RoomRepository(roomApi)
 
+        val userApi = retrofit.create(com.example.bookingservice.data.api.UserApi::class.java)
+
         setContent {
             BookingServiceTheme {
                 AppNavigation(
                     authRepository = authRepository,
                     bookingRepository = bookingRepository,
                     buildingRepository = buildingRepository,
-                    roomRepository = roomRepository
+                    roomRepository = roomRepository,
+                    userApi = userApi
                 )
             }
         }
@@ -89,10 +92,12 @@ fun AppNavigation(
     authRepository: AuthRepository,
     bookingRepository: BookingRepository,
     buildingRepository: BuildingRepository,
-    roomRepository: RoomRepository
+    roomRepository: RoomRepository,
+    userApi: com.example.bookingservice.data.api.UserApi
 ) {
     val navController = rememberNavController()
-    val authViewModel = AuthViewModel(authRepository)
+    val userRepository = com.example.bookingservice.data.repository.UserRepository(userApi)
+    val authViewModel = AuthViewModel(authRepository, userRepository)
 
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
@@ -142,6 +147,7 @@ fun AppNavigation(
             CreateBookingScreen(
                 roomId = roomId,
                 viewModel = BookingViewModel(bookingRepository),
+                authViewModel = authViewModel,
                 onBookingSuccess = { navController.popBackStack() }
             )
         }
