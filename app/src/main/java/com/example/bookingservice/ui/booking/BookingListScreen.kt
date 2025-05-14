@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.ui.platform.LocalContext
+import com.example.bookingservice.data.api.UserApi
+import com.example.bookingservice.data.api.UpdateUserRequest
+import com.example.bookingservice.data.repository.UserRepository
 
 @Composable
 fun BookingListScreen(
