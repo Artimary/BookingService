@@ -18,6 +18,9 @@ import com.example.bookingservice.data.api.BookingApi
 import com.example.bookingservice.data.api.CreateBookingRequest
 import com.example.bookingservice.data.repository.BookingRepository
 import com.example.bookingservice.viewmodel.AuthViewModel
+import com.example.bookingservice.data.api.UserApi
+import com.example.bookingservice.data.api.UpdateUserRequest
+import com.example.bookingservice.data.repository.UserRepository
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
