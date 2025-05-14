@@ -2,6 +2,7 @@ package com.example.bookingservice.data.repository
 
 import android.content.Context
 import com.example.bookingservice.data.api.AuthApi
+import com.example.bookingservice.data.api.AuthResponse
 import com.example.bookingservice.data.api.LoginRequest
 import com.example.bookingservice.data.api.SignupRequest
 import com.example.bookingservice.data.model.User
@@ -12,17 +13,17 @@ open class AuthRepository(
     private val authApi: AuthApi,
     private val context: Context
 ) {
-    suspend fun login(username: String, password: String): Result<User> {
+    suspend fun login(email: String, password: String): Result<User> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = authApi.login(LoginRequest(username, password))
+                val response = authApi.login(LoginRequest(email, password))
                 if (response.isSuccessful && response.body() != null) {
                     val authResponse = response.body()!!
                     context.getSharedPreferences("auth", Context.MODE_PRIVATE)
                         .edit()
-//                        .putString("jwt_token", authResponse.token)
+                        .putString("jwt_token", authResponse.access_token)
                         .apply()
-                    Result.success(authResponse)
+                    Result.success(authResponse.user)
                 } else {
                     Result.failure(Exception(response.errorBody()?.string() ?: "Login failed"))
                 }
@@ -40,9 +41,9 @@ open class AuthRepository(
                     val authResponse = response.body()!!
                     context.getSharedPreferences("auth", Context.MODE_PRIVATE)
                         .edit()
-//                        .putString("jwt_token", authResponse.token)
+                        .putString("jwt_token", authResponse.access_token)
                         .apply()
-                    Result.success(authResponse)
+                    Result.success(authResponse.user)
                 } else {
                     Result.failure(Exception(response.errorBody()?.string() ?: "Signup failed"))
                 }

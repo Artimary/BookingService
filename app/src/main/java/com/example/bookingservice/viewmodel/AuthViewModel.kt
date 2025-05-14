@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import android.util.Log
+import com.example.bookingservice.data.api.AuthResponse
 
 open class AuthViewModel(
     private val repository: AuthRepository,
@@ -30,16 +31,16 @@ open class AuthViewModel(
     private val _updatePasswordResult = MutableStateFlow<Result<Unit>?>(null)
     val updatePasswordResult: StateFlow<Result<Unit>?> = _updatePasswordResult
 
-    fun login(username: String, password: String) {
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-            Log.d("AuthViewModel", "Starting login request with email=$username")
+            Log.d("AuthViewModel", "Starting login request with email=$email")
             try {
-                val result = repository.login(username, password)
+                val result = repository.login(email, password)
                 _isLoading.value = false
                 if (result.isSuccess) {
-                    _user.value = result.getOrNull() as User?
+                    _user.value = result.getOrThrow() as User?
                     Log.d("AuthViewModel", "Login successful: ${_user.value}")
                 } else {
                     val errorMsg = result.exceptionOrNull()?.stackTraceToString() ?: "Unknown error"

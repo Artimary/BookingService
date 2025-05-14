@@ -20,6 +20,7 @@ import org.junit.Test
 class AuthViewModelTest {
     private val testDispatcher = UnconfinedTestDispatcher()
     private val mockRepository: AuthRepository = mockk()
+    private val mockUserRepository: com.example.bookingservice.data.repository.UserRepository = mockk()
     private lateinit var viewModel: AuthViewModel
 
     private val testUser = User(
@@ -32,7 +33,7 @@ class AuthViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = AuthViewModel(mockRepository)
+        viewModel = AuthViewModel(mockRepository, mockUserRepository)
     }
 
     @After

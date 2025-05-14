@@ -30,7 +30,7 @@ class AuthRepositoryTest {
         role = "user"
     )
     private val testAuthResponse = AuthResponse(
-        token = "jwt123",
+        access_token = "jwt123",
         user = testUser
     )
 
@@ -49,7 +49,7 @@ class AuthRepositoryTest {
     @Test
     fun `login success should save token and return user`() = runTest {
         // Arrange
-        val mockResponse = Response.success(testUser)
+        val mockResponse = Response.success(testAuthResponse)
         coEvery { mockAuthApi.login(any()) } returns mockResponse
 
         // Act
@@ -64,7 +64,7 @@ class AuthRepositoryTest {
     fun `login failure should return error`() = runTest {
         val errorBody = "{\"error\":\"invalid_credentials\"}"
             .toResponseBody("application/json".toMediaType())
-        val errorResponse = Response.error<User>(400, errorBody)
+        val errorResponse = Response.error<AuthResponse>(400, errorBody)
 
         coEvery { mockAuthApi.login(any()) } returns errorResponse
 
@@ -77,7 +77,7 @@ class AuthRepositoryTest {
 
     @Test
     fun `signup success should save token`() = runTest {
-        val testAuthResponse = testUser
+        val testAuthResponse = testAuthResponse
         val mockResponse = Response.success(testAuthResponse)
         coEvery { mockAuthApi.signup(any()) } returns mockResponse
 
