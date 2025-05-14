@@ -31,6 +31,8 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.example.bookingservice.data.api.UserApi
+import com.example.bookingservice.data.repository.UserRepository
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,23 +40,25 @@ class MainActivity : ComponentActivity() {
 
         // Настройка OkHttpClient с интерсептором для JWT-токена
         val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor { chain: Interceptor.Chain ->
-                val token = getSharedPreferences("auth", Context.MODE_PRIVATE)
-                    .getString("jwt_token", null)
-                val request = chain.request().newBuilder()
-                    .apply {
-                        if (token != null) {
-                            addHeader("Authorization", "Bearer $token")
+            .addInterceptor(object : Interceptor {
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val token = getSharedPreferences("auth", Context.MODE_PRIVATE)
+                        .getString("jwt_token", null)
+                    val newRequest = chain.request().newBuilder()
+                        .apply {
+                            if (token != null) {
+                                addHeader("Authorization", "Bearer $token")
+                            }
                         }
-                    }
-                    .build()
-                chain.proceed(request)
-            }
+                        .build()
+                    return chain.proceed(newRequest)
+                }
+            })
             .build()
 
         // Настройка Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://51.250.89.156:8080/api/")
+            .baseUrl("http://84.252.128.137:8080/api/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
