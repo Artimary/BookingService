@@ -14,7 +14,7 @@ class BookingRepository(
             try {
                 val response = bookingApi.getAllBookings()
                 if (response.isSuccessful && response.body() != null) {
-                    val bookings = response.body()!!.filter { it.userId == userId }
+                    val bookings = response.body()!!.filter { it.user_id == userId }
                     Result.success(bookings)
                 } else {
                     Result.failure(Exception(response.errorBody()?.string() ?: "Failed to load bookings"))
@@ -34,7 +34,7 @@ class BookingRepository(
         return withContext(Dispatchers.IO) {
             try {
                 val response = bookingApi.createBooking(
-                    CreateBookingRequest(userId, roomId, startTime, endTime)
+                    CreateBookingRequest(userId, roomId, startTime.substring(startIndex = 0, endIndex = startTime.length-1), endTime.substring(startIndex = 0, endIndex = endTime.length-1))
                 )
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
@@ -47,7 +47,7 @@ class BookingRepository(
         }
     }
 
-    suspend fun deleteBooking(id: String): Result<Booking> {
+    suspend fun deleteBooking(id: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = bookingApi.deleteBooking(id)

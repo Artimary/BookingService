@@ -23,14 +23,17 @@ open class BookingViewModel(
     private val _bookingSuccess = MutableStateFlow(false)
     open val bookingSuccess: StateFlow<Boolean> = _bookingSuccess
 
+    private var currentUserId: String? = null
+
     open fun loadBookings(userId: String) {
+        currentUserId = userId
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             val result = repository.getBookings(userId)
             _isLoading.value = false
             if (result.isSuccess) {
-                _bookings.value = result.getOrNull()
+                _bookings.value = result.getOrThrow()
             } else {
                 _error.value = result.exceptionOrNull()?.message ?: "Failed to load bookings"
             }
@@ -63,7 +66,7 @@ open class BookingViewModel(
             _isLoading.value = false
             if (result.isSuccess) {
                 // Обновляем список после удаления
-                loadBookings("") // Можно передать userId, если он доступен
+                loadBookings(currentUserId ?: "")
             } else {
                 _error.value = result.exceptionOrNull()?.message ?: "Failed to delete booking"
             }

@@ -66,7 +66,8 @@ fun BookingListScreen(
             }
             bookings == null -> {
                 Log.d("BookingListScreen", "Bookings is null")
-                Text("Bookings data not loaded")
+//                Text("Bookings data not loaded")
+                viewModel.loadBookings(userId)
             }
             bookings?.isEmpty() == true -> {
                 Log.d("BookingListScreen", "Bookings is empty")
@@ -81,8 +82,8 @@ fun BookingListScreen(
                             .padding(vertical = 4.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Room: ${booking.roomId}")
-                            Text("Time: ${booking.startTime} to ${booking.endTime}")
+                            Text("Room: ${booking.room_id}")
+                            Text("Time: ${booking.start_time} to ${booking.end_time}")
                             Text("Status: ${booking.status}")
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
@@ -173,18 +174,18 @@ fun PreviewBookingListScreen() {
     val mockBookings = listOf(
         com.example.bookingservice.data.model.Booking(
             id = "1",
-            userId = "user1",
-            roomId = "room1",
-            startTime = "2024-01-01T10:00",
-            endTime = "2024-01-01T11:00",
+            user_id = "user1",
+            room_id = "room1",
+            start_time = "2024-01-01T10:00",
+            end_time = "2024-01-01T11:00",
             status = "Confirmed"
         ),
         com.example.bookingservice.data.model.Booking(
             id = "2",
-            userId = "user1",
-            roomId = "room2",
-            startTime = "2024-01-02T12:00",
-            endTime = "2024-01-02T13:00",
+            user_id = "user1",
+            room_id = "room2",
+            start_time = "2024-01-02T12:00",
+            end_time = "2024-01-02T13:00",
             status = "Pending"
         )
     )

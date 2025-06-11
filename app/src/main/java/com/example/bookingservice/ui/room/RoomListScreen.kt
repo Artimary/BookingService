@@ -56,7 +56,8 @@ fun RoomListScreen(
                 )
             }
             rooms == null -> {
-                Text("Rooms data not loaded")
+                //Text("Rooms data not loaded")
+                viewModel.loadRooms(buildingId)
             }
             rooms?.isEmpty() == true -> {
                 Text("No rooms found in this building")

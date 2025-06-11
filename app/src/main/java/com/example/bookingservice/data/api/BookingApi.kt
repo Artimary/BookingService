@@ -11,13 +11,13 @@ import retrofit2.http.DELETE
 
 data class CreateBookingRequest(
     @Field("user_id")
-    val userId: String,
+    val user_id: String,
     @Field("room_id")
-    val roomId: String,
+    val room_id: String,
     @Field("start_time")
-    val startTime: String,
+    val start_time: String,
     @Field("end_time")
-    val endTime: String, 
+    val end_time: String,
     val status: String? = null
 )
 
@@ -32,5 +32,5 @@ interface BookingApi {
     suspend fun getAllBookings(): Response<List<Booking>>
 
     @DELETE("bookings/{id}")
-    suspend fun deleteBooking(@Path("id") id: String): Response<Booking>
+    suspend fun deleteBooking(@Path("id") id: String): Response<Unit>
 }

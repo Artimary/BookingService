@@ -51,7 +51,8 @@ fun BuildingListScreen(
                 )
             }
             buildings == null -> {
-                Text("Buildings data not loaded")
+                //Text("Buildings data not loaded")
+                viewModel.loadBuildings()
             }
             buildings?.isEmpty() == true -> {
                 Text("No buildings found")
