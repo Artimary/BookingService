@@ -108,20 +108,20 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: ./gradlew sonar
 
-  # docker_push:
-  #   needs: tests
-  #   runs-on: ubuntu-latest
+  docker_push:
+    needs: tests
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Login to Yandex Cloud Container Registry
-  #       id: login-cr
-  #       uses: yc-actions/yc-cr-login@v3
-  #       with:
-  #         yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v3
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
-  #     - name: Build, tag, and push image to Yandex Cloud Container Registry
-  #       run: |
-  #         docker build -t cr.yandex/${{ secrets.YC_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
-  #         docker push cr.yandex/${{ secrets.YC_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        run: |
+          docker build -t cr.yandex/${{ secrets.YC_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+          docker push cr.yandex/${{ secrets.YC_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}

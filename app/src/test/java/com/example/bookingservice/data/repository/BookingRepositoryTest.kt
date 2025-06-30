@@ -146,23 +146,42 @@ class BookingRepositoryTest {
         assertEquals("Connection error", result.exceptionOrNull()?.message)
     }
 
-//    @Test
-//    fun `modifyBooking should handle exceptions`() = runTest {
-//        // Arrange
-//        coEvery {
-//            mockBookingApi.updateBooking(any(), any())
-//        } throws Exception("Server error")
-//
-//        // Act
-//        val result = bookingRepository.modifyBooking(
-//            "booking123",
-//            testRoomId,
-//            "2025-07-01T10:00:00",
-//            "2025-07-01T11:00:00"
-//        )
-//
-//        // Assert
-//        assertTrue(result.isFailure)
-//        assertEquals("Server error", result.exceptionOrNull()?.message)
-//    }
+    @Test
+    fun `getBookings should return failure on API error`() = runTest {
+        // Arrange
+        val errorBody = "{\"error\":\"server_error\"}"
+            .toResponseBody("application/json".toMediaType())
+        val errorResponse = Response.error<List<Booking>>(500, errorBody)
+        coEvery { mockBookingApi.getAllBookings() } returns errorResponse
+
+        // Act
+        val result = bookingRepository.getBookings(testUserId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull()?.message?.contains("server_error") == true)
+    }
+
+    @Test
+    fun `createBooking should return failure on API error`() = runTest {
+        // Arrange
+        val errorBody = "{\"error\":\"validation_error\"}"
+            .toResponseBody("application/json".toMediaType())
+        val errorResponse = Response.error<Booking>(422, errorBody)
+        coEvery {
+            mockBookingApi.createBooking(any())
+        } returns errorResponse
+
+        // Act
+        val result = bookingRepository.createBooking(
+            testUserId,
+            testRoomId,
+            "2023-11-15T10:00:00Z",
+            "2023-11-15T11:00:00Z"
+        )
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull()?.message?.contains("validation_error") == true)
+    }
 }

@@ -14,6 +14,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
+import java.io.IOException
 
 @ExperimentalCoroutinesApi
 class AuthRepositoryTest {
@@ -99,4 +100,79 @@ class AuthRepositoryTest {
         assertTrue(result.isSuccess)
         verify { mockEditor.remove("jwt_token") }
     }
+
+    @Test
+    fun `signup failure should return error result`() = runTest {
+        // Arrange
+        val errorBody = "{\"error\":\"email_exists\"}"
+            .toResponseBody("application/json".toMediaType())
+        val errorResponse = Response.error<AuthResponse>(400, errorBody)
+        coEvery { mockAuthApi.signup(any()) } returns errorResponse
+
+        // Act
+        val result = authRepository.signup("user", "existing@email.com", "password")
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull()?.message?.contains("email_exists") == true)
+    }
+
+    @Test
+    fun `logout failure should return error result`() = runTest {
+        // Arrange
+        val errorBody = "{\"error\":\"unauthorized\"}"
+            .toResponseBody("application/json".toMediaType())
+        val errorResponse = Response.error<Unit>(401, errorBody)
+        coEvery { mockAuthApi.logout() } returns errorResponse
+
+        // Act
+        val result = authRepository.logout()
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull()?.message?.contains("unauthorized") == true)
+    }
+
+    @Test
+    fun `login should handle network exceptions`() = runTest {
+        // Arrange
+        val exception = IOException("Network error")
+        coEvery { mockAuthApi.login(any()) } throws exception
+
+        // Act
+        val result = authRepository.login("email@test.com", "password")
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertEquals(exception, result.exceptionOrNull())
+    }
+
+    @Test
+    fun `signup should handle network exceptions`() = runTest {
+        // Arrange
+        val exception = IOException("Network error")
+        coEvery { mockAuthApi.signup(any()) } throws exception
+
+        // Act
+        val result = authRepository.signup("user", "email@test.com", "password")
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertEquals(exception, result.exceptionOrNull())
+    }
+
+    @Test
+    fun `logout should handle network exceptions`() = runTest {
+        // Arrange
+        val exception = IOException("Network error")
+        coEvery { mockAuthApi.logout() } throws exception
+
+        // Act
+        val result = authRepository.logout()
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertEquals(exception, result.exceptionOrNull())
+    }
+
 }

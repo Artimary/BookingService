@@ -56,11 +56,11 @@ jobs:
 
       - name: Upload to Object Storage
         run: |
-          yc storage s3 cp app-release.apk s3://android-app-releases/releases/app-$(date +%Y%m%d-%H%M).apk
+          yc storage s3 cp app-release.apk s3://android-app-releases/releases/booking-service.apk
 
       - name: Generate download URL
         run: |
-          echo "Download URL: https://storage.yandexcloud.net/${{ secrets.YC_BUCKET_NAME }}/releases/app-$(date +%Y%m%d-%H%M).apk" >> url.txt
+          echo "Download URL: https://storage.yandexcloud.net/${{ secrets.YC_BUCKET_NAME }}/releases/booking-service.apk" >> url.txt
 
       - name: Upload URL artifact
         uses: actions/upload-artifact@v4
