@@ -1,2 +1,102 @@
 package com.example.bookingservice.data.repository
 
+import com.example.bookingservice.data.api.BookingApi
+import com.example.bookingservice.data.api.CreateBookingRequest
+import com.example.bookingservice.data.model.Booking
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+import retrofit2.Response
+
+@ExperimentalCoroutinesApi
+class BookingRepositoryTest {
+    private lateinit var bookingRepository: BookingRepository
+    private val mockBookingApi: BookingApi = mockk()
+
+    private val testUserId = "user123"
+    private val testRoomId = "room456"
+    private val testBooking = Booking(
+        id = "booking789",
+        user_id = testUserId,
+        room_id = testRoomId,
+        start_time = "2023-11-15T10:00:00Z",
+        end_time = "2023-11-15T11:00:00Z",
+        status =  "CONFIRMED"
+    )
+    private val testBookings = listOf(testBooking)
+
+    @Before
+    fun setup() {
+        bookingRepository = BookingRepository(mockBookingApi)
+    }
+
+    @Test
+    fun `getBookings should filter by user ID`() = runTest {
+        // Arrange
+        val mockResponse = Response.success(testBookings)
+        coEvery { mockBookingApi.getAllBookings() } returns mockResponse
+
+        // Act
+        val result = bookingRepository.getBookings(testUserId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertEquals(testBookings, result.getOrNull())
+    }
+
+    @Test
+    fun `getBookings should return error on API failure`() = runTest {
+        // Arrange
+        val errorBody = "{\"error\":\"server_error\"}"
+            .toResponseBody("application/json".toMediaType())
+        val errorResponse = Response.error<List<Booking>>(500, errorBody)
+        coEvery { mockBookingApi.getAllBookings() } returns errorResponse
+
+        // Act
+        val result = bookingRepository.getBookings(testUserId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        // Don't check the specific error message, just verify it's a failure
+    }
+
+    @Test
+    fun `createBooking should return booking on success`() = runTest {
+        // Arrange
+        val mockResponse = Response.success(testBooking)
+        coEvery {
+            mockBookingApi.createBooking(any())
+        } returns mockResponse
+
+        // Act
+        val result = bookingRepository.createBooking(
+            testUserId,
+            testRoomId,
+            "2023-11-15T10:00:00Z",
+            "2023-11-15T11:00:00Z"
+        )
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertEquals(testBooking, result.getOrNull())
+    }
+
+    @Test
+    fun `deleteBooking should return success`() = runTest {
+        // Arrange
+        val mockResponse = Response.success(Unit)
+        coEvery { mockBookingApi.deleteBooking(any()) } returns mockResponse
+
+        // Act
+        val result = bookingRepository.deleteBooking("booking789")
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+}

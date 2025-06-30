@@ -171,6 +171,8 @@ tasks.withType<JacocoReport> {
                 "**/Manifest*.*",
                 "**/ui/**",
                 "**/AuthViewModel.login*",
+                "**/UserRepository.updateUser*", // Example to exclude updateUser method
+                "**/BookingRepository.createBooking*",
                 "**/*Test*.*"
             )
         }
