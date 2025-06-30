@@ -51,19 +51,20 @@ class BookingRepositoryTest {
     }
 
     @Test
-    fun `getBookings should return error on API failure`() = runTest {
+    fun `deleteBooking should return failure on API error`() = runTest {
         // Arrange
-        val errorBody = "{\"error\":\"server_error\"}"
+        val errorBody = "{\"error\":\"not_found\"}"
             .toResponseBody("application/json".toMediaType())
-        val errorResponse = Response.error<List<Booking>>(500, errorBody)
-        coEvery { mockBookingApi.getAllBookings() } returns errorResponse
+        val errorResponse = Response.error<Unit>(404, errorBody)
+        coEvery { mockBookingApi.deleteBooking(any()) } returns errorResponse
 
         // Act
-        val result = bookingRepository.getBookings(testUserId)
+        val result = bookingRepository.deleteBooking("booking789")
 
         // Assert
         assertTrue(result.isFailure)
-        // Don't check the specific error message, just verify it's a failure
+        // We can verify the error message contains expected content
+        assertTrue(result.exceptionOrNull()?.message?.contains("not_found") == true)
     }
 
     @Test
@@ -98,5 +99,18 @@ class BookingRepositoryTest {
 
         // Assert
         assertTrue(result.isSuccess)
+    }
+
+    @Test
+    fun `deleteBooking should handle exceptions`() = runTest {
+        // Arrange
+        coEvery { mockBookingApi.deleteBooking(any()) } throws Exception("Network error")
+
+        // Act
+        val result = bookingRepository.deleteBooking("booking789")
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertEquals("Network error", result.exceptionOrNull()?.message)
     }
 }

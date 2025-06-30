@@ -31,12 +31,12 @@ open class BookingViewModel(
             _isLoading.value = true
             _error.value = null
             val result = repository.getBookings(userId)
-            _isLoading.value = false
             if (result.isSuccess) {
-                _bookings.value = result.getOrThrow()
+                _bookings.value = result.getOrNull()
             } else {
                 _error.value = result.exceptionOrNull()?.message ?: "Failed to load bookings"
             }
+            _isLoading.value = false
         }
     }
 
@@ -45,12 +45,12 @@ open class BookingViewModel(
             _isLoading.value = true
             _error.value = null
             val result = repository.createBooking(userId, roomId, startTime, endTime)
-            _isLoading.value = false
             if (result.isSuccess) {
                 _bookingSuccess.value = true
             } else {
                 _error.value = result.exceptionOrNull()?.message ?: "Failed to create booking"
             }
+            _isLoading.value = false
         }
     }
 
@@ -63,13 +63,12 @@ open class BookingViewModel(
             _isLoading.value = true
             _error.value = null
             val result = repository.deleteBooking(id)
-            _isLoading.value = false
             if (result.isSuccess) {
-                // Обновляем список после удаления
-                loadBookings(currentUserId ?: "")
+                currentUserId?.let { loadBookings(it) }
             } else {
                 _error.value = result.exceptionOrNull()?.message ?: "Failed to delete booking"
             }
+            _isLoading.value = false
         }
     }
 }

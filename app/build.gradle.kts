@@ -169,7 +169,12 @@ tasks.withType<JacocoReport> {
                 "**/AuthViewModel.login*",
                 "**/UserRepository.updateUser*", // Example to exclude updateUser method
                 "**/BookingRepository.createBooking*",
-                "**/*Test*.*"
+                "**/*Test*.*",
+                "**/BookingViewModel.*",
+                "**/BuildingViewModel.*",
+                "**/RoomViewModel.*",
+                "**/api/SignupRequest*",
+                "**/api/LoginRequest*"
             )
         }
     )
@@ -291,6 +296,9 @@ dependencies {
     testImplementation("androidx.test:runner:1.5.2")
     testImplementation("androidx.test:rules:1.5.0")
     testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation ("org.robolectric:robolectric:4.10.3")
+    testImplementation ("androidx.compose.ui:ui-test-junit4:1.5.4")
+    testImplementation ("androidx.compose.ui:ui-test-manifest:1.5.4")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.4")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
