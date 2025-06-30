@@ -1,4 +1,4 @@
-name: Android CD Pipeline
+name: Android CD
 
 on:
   push:
@@ -29,6 +29,7 @@ jobs:
         with:
           name: android-app
           path: app-release.apk
+
   deploy_to_yc:
     needs: build_apk
     runs-on: ubuntu-latest
