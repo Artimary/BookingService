@@ -228,7 +228,7 @@ sonar {
             "**/RoomViewModel.*",
             "**/BuildingViewModel.*",
             "**/BookingRepository.*",
-            "**/AuthViewModel.*",
+            "**/AuthViewModel_test*",
             "**/Create*.*",
             "**/Update*.*",
             "**/RoomRepository.*",
