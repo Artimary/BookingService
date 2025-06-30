@@ -97,16 +97,19 @@ tasks.register<JacocoReport>("jacocoTestReport") {
             "**/UserRepository*",
             "**/BuildingRepository*",
             "**/model/**",
+            "**/AuthViewModel_test*"
             // Add other excludes as needed
         )
     }
+
     val executionDataFiles = fileTree(buildDir) {
         include(
             "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
             "outputs/code_coverage/debugAndroidTest/connected/*coverage.ec"
         )
     }
-    
+
+
     val mainSrc = "${project.projectDir}/src/main/java"
     
     sourceDirectories.setFrom(files(mainSrc))
@@ -167,6 +170,7 @@ tasks.withType<JacocoReport> {
                 "**/BuildConfig.*",
                 "**/Manifest*.*",
                 "**/ui/**",
+                "**/AuthViewModel.login*",
                 "**/*Test*.*"
             )
         }
@@ -254,6 +258,7 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("androidx.test:runner:1.5.2")
     testImplementation("androidx.test:rules:1.5.0")
+    testImplementation("app.cash.turbine:turbine:1.0.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.4")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

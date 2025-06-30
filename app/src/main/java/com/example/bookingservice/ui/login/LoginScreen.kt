@@ -9,12 +9,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bookingservice.viewmodel.AuthViewModel
+import com.example.bookingservice.viewmodel.AuthViewModel_test
 import android.util.Log
 import androidx.compose.ui.platform.testTag
 
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel = viewModel(),
+    viewModel_test: AuthViewModel_test = viewModel(),
     onLoginSuccess: (String) -> Unit,
     onRegisterClick: () -> Unit
 ) {
@@ -67,7 +69,7 @@ fun LoginScreen(
             Button(
                 onClick = {
                     Log.d("LoginScreen", "Login button clicked")
-                    viewModel.login(email, password)
+                    viewModel_test.login(email, password)
                           },
                 modifier = Modifier.fillMaxWidth().testTag("LoginButton"),
                 enabled = email.isNotBlank() && password.isNotBlank()

@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.bookingservice.viewmodel.AuthViewModel
+import com.example.bookingservice.viewmodel.AuthViewModel_test
 import com.example.bookingservice.viewmodel.BookingViewModel
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +25,8 @@ import com.example.bookingservice.data.repository.UserRepository
 fun BookingListScreen(
     userId: String,
     viewModel: BookingViewModel = viewModel(),
-    authViewModel: AuthViewModel, // Добавлен параметр
+    authViewModel: AuthViewModel,
+    authViewModel_test: AuthViewModel_test,// Добавлен параметр
     onCreateBookingClick: () -> Unit,
     onLogout: () -> Unit // Добавлен параметр
 ) {
@@ -130,7 +132,7 @@ fun BookingListScreen(
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            authViewModel.updatePassword(userId, newPassword)
+                            authViewModel_test.updatePassword(userId, newPassword)
                             showChangePasswordDialog = false
                         }
                     ) {
@@ -168,73 +170,73 @@ fun BookingListScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewBookingListScreen() {
-    val mockBookings = listOf(
-        com.example.bookingservice.data.model.Booking(
-            id = "1",
-            user_id = "user1",
-            room_id = "room1",
-            start_time = "2024-01-01T10:00",
-            end_time = "2024-01-01T11:00",
-            status = "Confirmed"
-        ),
-        com.example.bookingservice.data.model.Booking(
-            id = "2",
-            user_id = "user1",
-            room_id = "room2",
-            start_time = "2024-01-02T12:00",
-            end_time = "2024-01-02T13:00",
-            status = "Pending"
-        )
-    )
-
-    val repository = com.example.bookingservice.data.repository.BookingRepository(
-        bookingApi = object : com.example.bookingservice.data.api.BookingApi {
-            override suspend fun createBooking(request: com.example.bookingservice.data.api.CreateBookingRequest) = throw NotImplementedError()
-            override suspend fun getBooking(id: String) = throw NotImplementedError()
-            override suspend fun getAllBookings() = throw NotImplementedError()
-            override suspend fun deleteBooking(id: String) = throw NotImplementedError()
-        }
-    )
-    val mockViewModel = object : BookingViewModel(repository) {
-        override val bookings: StateFlow<List<com.example.bookingservice.data.model.Booking>?> = MutableStateFlow(mockBookings).asStateFlow()
-        override val isLoading: StateFlow<Boolean> = MutableStateFlow(false).asStateFlow()
-        override val error: StateFlow<String?> = MutableStateFlow(null).asStateFlow()
-        override fun loadBookings(userId: String) {}
-        override fun deleteBooking(id: String) {}
-    }
-
-    val mockAuthApi = object : com.example.bookingservice.data.api.AuthApi {
-        override suspend fun login(request: com.example.bookingservice.data.api.LoginRequest) = throw NotImplementedError()
-        override suspend fun signup(request: com.example.bookingservice.data.api.SignupRequest) = throw NotImplementedError()
-        override suspend fun logout() = throw NotImplementedError()
-    }
-
-    val mockUserApi = object : com.example.bookingservice.data.api.UserApi {
-        override suspend fun updateUser(id: String, request: com.example.bookingservice.data.api.UpdateUserRequest) = throw NotImplementedError()
-    }
-
-    val mockContext = LocalContext.current
-
-    val mockAuthRepository = com.example.bookingservice.data.repository.AuthRepository(
-        authApi = mockAuthApi,
-        context = mockContext
-    )
-
-    val mockUserRepository = com.example.bookingservice.data.repository.UserRepository(mockUserApi)
-
-    val mockAuthViewModel = object : AuthViewModel(mockAuthRepository, mockUserRepository) {
-        override val error: StateFlow<String?> = MutableStateFlow(null).asStateFlow()
-        override fun logout() {}
-    }
-
-    BookingListScreen(
-        userId = "user1",
-        viewModel = mockViewModel,
-        authViewModel = mockAuthViewModel,
-        onCreateBookingClick = {},
-        onLogout = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewBookingListScreen() {
+//    val mockBookings = listOf(
+//        com.example.bookingservice.data.model.Booking(
+//            id = "1",
+//            user_id = "user1",
+//            room_id = "room1",
+//            start_time = "2024-01-01T10:00",
+//            end_time = "2024-01-01T11:00",
+//            status = "Confirmed"
+//        ),
+//        com.example.bookingservice.data.model.Booking(
+//            id = "2",
+//            user_id = "user1",
+//            room_id = "room2",
+//            start_time = "2024-01-02T12:00",
+//            end_time = "2024-01-02T13:00",
+//            status = "Pending"
+//        )
+//    )
+//
+//    val repository = com.example.bookingservice.data.repository.BookingRepository(
+//        bookingApi = object : com.example.bookingservice.data.api.BookingApi {
+//            override suspend fun createBooking(request: com.example.bookingservice.data.api.CreateBookingRequest) = throw NotImplementedError()
+//            override suspend fun getBooking(id: String) = throw NotImplementedError()
+//            override suspend fun getAllBookings() = throw NotImplementedError()
+//            override suspend fun deleteBooking(id: String) = throw NotImplementedError()
+//        }
+//    )
+//    val mockViewModel = object : BookingViewModel(repository) {
+//        override val bookings: StateFlow<List<com.example.bookingservice.data.model.Booking>?> = MutableStateFlow(mockBookings).asStateFlow()
+//        override val isLoading: StateFlow<Boolean> = MutableStateFlow(false).asStateFlow()
+//        override val error: StateFlow<String?> = MutableStateFlow(null).asStateFlow()
+//        override fun loadBookings(userId: String) {}
+//        override fun deleteBooking(id: String) {}
+//    }
+//
+//    val mockAuthApi = object : com.example.bookingservice.data.api.AuthApi {
+//        override suspend fun login(request: com.example.bookingservice.data.api.LoginRequest) = throw NotImplementedError()
+//        override suspend fun signup(request: com.example.bookingservice.data.api.SignupRequest) = throw NotImplementedError()
+//        override suspend fun logout() = throw NotImplementedError()
+//    }
+//
+//    val mockUserApi = object : com.example.bookingservice.data.api.UserApi {
+//        override suspend fun updateUser(id: String, request: com.example.bookingservice.data.api.UpdateUserRequest) = throw NotImplementedError()
+//    }
+//
+//    val mockContext = LocalContext.current
+//
+//    val mockAuthRepository = com.example.bookingservice.data.repository.AuthRepository(
+//        authApi = mockAuthApi,
+//        context = mockContext
+//    )
+//
+//    val mockUserRepository = com.example.bookingservice.data.repository.UserRepository(mockUserApi)
+//
+//    val mockAuthViewModel = object : AuthViewModel(mockAuthRepository, mockUserRepository) {
+//        override val error: StateFlow<String?> = MutableStateFlow(null).asStateFlow()
+//        override fun logout() {}
+//    }
+//
+//    BookingListScreen(
+//        userId = "user1",
+//        viewModel = mockViewModel,
+//        authViewModel = mockAuthViewModel,
+//        onCreateBookingClick = {},
+//        onLogout = {}
+//    )
+//}

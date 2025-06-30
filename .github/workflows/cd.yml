@@ -1,10 +1,12 @@
 name: Android CD
 
-on: [push]
-#   push:
-#     branches: [main]
-#     paths:
-#       - "app/**"
+on:
+  workflow_run:
+    workflows: ["Android CI"] # Name of your CI workflow
+    types:
+      - completed
+    branches:
+      - main
 
 jobs:
   build_apk:

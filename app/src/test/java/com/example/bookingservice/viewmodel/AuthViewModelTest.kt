@@ -1,5 +1,6 @@
 package com.example.bookingservice.viewmodel
 
+import app.cash.turbine.test
 import com.example.bookingservice.data.model.User
 import com.example.bookingservice.data.repository.AuthRepository
 import io.mockk.coEvery
@@ -9,6 +10,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -36,26 +38,20 @@ class AuthViewModelTest {
         viewModel = AuthViewModel(mockRepository, mockUserRepository)
     }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
 //    @Test
 //    fun `login success should update user state`() = runTest {
-//        // Arrange
 //        coEvery { mockRepository.login(any(), any()) } returns Result.success(testUser)
 //
-//        // Act
-//        viewModel.login("test", "pass")
+//        viewModel.login("email@test.com", "pass")
+//        assertTrue(viewModel)
+//        runCurrent() // позволяет coroutine завершиться
 //
-//        advanceUntilIdle()
-//
-//        // Assert
-//        assertEquals(testUser, viewModel.user.value)
+////        assertEquals(testUser, viewModel.user.value)
 //        assertFalse(viewModel.isLoading.value)
 //    }
-//
+
+
+
 //    @Test
 //    fun `login failure should update error state`() = runTest {
 //        // Arrange
@@ -65,12 +61,73 @@ class AuthViewModelTest {
 //        // Act
 //        viewModel.login("wrong", "creds")
 //
-//        // Assert
-//        advanceUntilIdle() // Ожидаем завершения корутин
+//        // Явно завершаем все корутины
+//        advanceUntilIdle()
 //
+//        println("User value: ${viewModel.user.value}")
+//        println("Error value: ${viewModel.error.value}")
+//        // Assert
 //        assertEquals(errorMsg, viewModel.error.value)
 //        assertNull(viewModel.user.value)
+//        assertFalse(viewModel.isLoading.value)
 //    }
+
+
+    @Test
+    fun `resetRegistrationSuccess should set flag to false`() = runTest {
+        // Arrange
+        coEvery { mockRepository.signup(any(), any(), any()) } returns Result.success(testUser)
+        viewModel.register("newUser", "email@test.com", "pass")
+        assertTrue(viewModel.registrationSuccess.value)
+
+        // Act
+        viewModel.resetRegistrationSuccess()
+
+        // Assert
+        assertFalse(viewModel.registrationSuccess.value)
+    }
+
+//    @Test
+//    fun `updatePassword success should reflect in result state`() = runTest {
+//        // Arrange
+//        coEvery { mockUserRepository.updateUser(any(), null, any()) } returns Result.success(testUser)
+//
+//        // Act
+//        viewModel.updatePassword("123", "newPassword")
+//
+//        // Явно завершаем все корутины
+//        advanceUntilIdle()
+//
+//        println("User value: ${viewModel.user.value}")
+//        println("Error value: ${viewModel.error.value}")
+//        // Assert
+//        val result = viewModel.updatePasswordResult.value
+//        assertNotNull(result)
+//        assertTrue(result?.isSuccess == true)
+//    }
+
+
+//    @Test
+//    fun `updatePassword failure should reflect in result state`() = runTest {
+//        // Arrange
+//        val error = Exception("Update failed")
+//        coEvery { mockUserRepository.updateUser(any(), null, any()) } returns Result.failure(error)
+//
+//        // Act
+//        viewModel.updatePassword("123", "newPassword")
+//
+//        // Явно завершаем все корутины
+//        advanceUntilIdle()
+//
+//        println("User value: ${viewModel.user.value}")
+//        println("Error value: ${viewModel.error.value}")
+//        // Assert
+//        val result = viewModel.updatePasswordResult.value
+//        assertNotNull(result)
+//        assertTrue(result?.isFailure == true)
+//        assertEquals(error, result?.exceptionOrNull())
+//    }
+
 
     @Test
     fun `registration success should update registration flag`() = runTest {
@@ -97,5 +154,10 @@ class AuthViewModelTest {
 
         // Assert
         assertNull(viewModel.user.value)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 }

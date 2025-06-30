@@ -33,6 +33,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.bookingservice.data.api.UserApi
 import com.example.bookingservice.data.repository.UserRepository
+import com.example.bookingservice.viewmodel.AuthViewModel_test
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,6 +103,7 @@ fun AppNavigation(
     val navController = rememberNavController()
     val userRepository = com.example.bookingservice.data.repository.UserRepository(userApi)
     val authViewModel = AuthViewModel(authRepository, userRepository)
+    val authViewModel_test = AuthViewModel_test(authRepository, userRepository)
 
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
@@ -138,6 +140,7 @@ fun AppNavigation(
                 userId = userId,
                 viewModel = BookingViewModel(bookingRepository),
                 authViewModel = authViewModel,
+                authViewModel_test = authViewModel_test,
                 onCreateBookingClick = { navController.navigate("buildings") },
                 onLogout = {
                     navController.navigate("login") {
