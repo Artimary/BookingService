@@ -186,12 +186,12 @@ tasks.check {
     dependsOn("jacocoTestCoverageVerification")
 }
 
-sonarqube {
+sonar {
     properties {
         property("sonar.projectKey", "BookingService")
         property("sonar.projectName", "BookingService Android")
-        property("sonar.host.url", "http://158.160.153.21:9000")
-        property("sonar.login", "sqp_5ca386079f2fae032d4de8664d295bef4bbad6b5")
+        property("sonar.host.url", System.getenv("SONAR_HOST"))
+        property("sonar.login", System.getenv("SONAR_TOKEN"))
 
         // Skip compile to avoid dependency issues
         property("sonar.gradle.skipCompile", true)
