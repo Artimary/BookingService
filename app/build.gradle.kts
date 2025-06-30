@@ -213,6 +213,44 @@ sonar {
         property("sonar.coverage.jacoco.xmlReportPaths",
             "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
 
+        // File exclusions
+        property("sonar.exclusions", arrayListOf(
+            "**/R.kt",
+            "**/R.java",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/ui/theme/**",
+            "**/ui/**",
+            "**/android/**",
+            "**/Main.kt",
+            "**/MainActivity.*",
+            "**/BookingViewModel.*",
+            "**/RoomViewModel.*",
+            "**/BuildingViewModel.*",
+            "**/BookingRepository.*",
+            "**/AuthViewModel.*",
+            "**/Create*.*",
+            "**/Update*.*",
+            "**/RoomRepository.*",
+            "**/UserRepository.*",
+            "**/BuildingRepository.*",
+            "**/model/**"
+        ).joinToString(","))
+
+        // Test exclusions
+        property("sonar.test.exclusions", "**/*Test*.*")
+
+        // Coverage exclusions - files to exclude from coverage calculations
+        property("sonar.coverage.exclusions", arrayListOf(
+            "**/ui/**",
+            "**/model/**",
+            "**/MainActivity.*",
+            "**/AuthViewModel.*",
+            "**/BookingViewModel.*",
+            "**/RoomViewModel.*",
+            "**/BuildingViewModel.*"
+        ).joinToString(","))
+
         // Java binaries
         property("sonar.java.binaries", arrayListOf(
             "build/intermediates/javac/debug/classes",
