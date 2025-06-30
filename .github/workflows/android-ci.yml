@@ -67,7 +67,7 @@ jobs:
       #   run: chmod +x ./gradlew
 
       - name: Run tests
-        run: ./gradlew testDebugUnitTest jacocoTestReport
+        run: ./gradlew testDebugUnitTest
 
       - name: Cache Gradle
         uses: actions/cache@v4
@@ -100,8 +100,8 @@ jobs:
       # - name: Change wrapper permissions
       #   run: chmod +x ./gradlew
 
-      # - name: Run tests with coverage
-      #   run: ./gradlew testDebugUnitTest jacocoTestReport
+      - name: Run tests with coverage
+        run: ./gradlew jacocoTestReport
 
       - name: SonarQube Scan
         env:
