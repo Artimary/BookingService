@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
 
         // Настройка Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://158.160.184.239:8080/api/")
+            .baseUrl("http://158.160.150.67:8080/api/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

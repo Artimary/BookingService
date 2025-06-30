@@ -1,0 +1,66 @@
+name: Android CD Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+
+jobs:
+  build_apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Build Release APK
+        run: |
+          ./gradlew assembleRelease
+          mv app/build/outputs/apk/release/app-release.apk app-release.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-app
+          path: app-release.apk
+
+  deploy_to_yc:
+    needs: build_apk
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: android-app
+
+      - name: Configure YC CLI
+        env:
+          YC_SERVICE_ACCOUNT_KEY: ${{ secrets.YC_SERVICE_ACCOUNT_KEY }}
+        run: |
+          echo "$YC_SERVICE_ACCOUNT_KEY" > key.json
+          yc config set service-account-key key.json
+          yc config set folder-id ${{ secrets.YC_FOLDER_ID }}
+
+      - name: Upload to Object Storage
+        run: |
+          yc storage object upload \
+            --bucket-name ${{ secrets.YC_BUCKET_NAME }} \
+            --name "releases/app-$(date +%Y%m%d-%H%M).apk" \
+            --file app-release.apk \
+            --public-read
+
+      - name: Generate download URL
+        run: |
+          echo "Download URL: https://storage.yandexcloud.net/${{ secrets.YC_BUCKET_NAME }}/releases/app-$(date +%Y%m%d-%H%M).apk" >> url.txt
+
+      - name: Upload URL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: download-url
+          path: url.txt

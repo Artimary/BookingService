@@ -78,20 +78,50 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-  docker_push:
+  sonarqube:
     needs: tests
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Login to Yandex Cloud Container Registry
-        id: login-cr
-        uses: yc-actions/yc-cr-login@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          fetch-depth: 0 # Important for SonarQube to get all history
 
-      - name: Build, tag, and push image to Yandex Cloud Container Registry
-        run: |
-          docker build -t cr.yandex/${{ secrets.YC_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
-          docker push cr.yandex/${{ secrets.YC_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Run tests with coverage
+        run: ./gradlew testDebugUnitTest jacocoTestReport
+
+      - name: SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: ./gradlew sonarqube
+
+  # docker_push:
+  #   needs: tests
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     - name: Login to Yandex Cloud Container Registry
+  #       id: login-cr
+  #       uses: yc-actions/yc-cr-login@v3
+  #       with:
+  #         yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+  #     - name: Build, tag, and push image to Yandex Cloud Container Registry
+  #       run: |
+  #         docker build -t cr.yandex/${{ secrets.YC_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+  #         docker push cr.yandex/${{ secrets.YC_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
