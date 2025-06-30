@@ -115,7 +115,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           sleep 5 # Wait for SonarQube to process the results
-          STATUS=$(curl -s -u ${SONAR_TOKEN}: "${SONAR_HOST_URL}/api/qualitygates/project_status?projectKey=your-project-key" | jq -r '.projectStatus.status')
+          STATUS=$(curl -s -u ${SONAR_TOKEN}: "${SONAR_HOST_URL}/api/qualitygates/project_status?projectKey=BookingService" | jq -r '.projectStatus.status')
           if [ "$STATUS" != "OK" ]; then
             echo "Quality Gate failed with status: $STATUS"
             exit 1
