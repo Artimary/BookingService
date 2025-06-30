@@ -88,14 +88,10 @@ tasks.register<JacocoReport>("jacocoTestReport") {
             "**/BookingViewModel*",
             "**/RoomViewModel*",
             "**/BuildingViewModel*",
-            "**/BookingRepository*",
             "**/AuthViewModel.login**",
             "**/AuthViewModel.updatePassword**",
             "**/Create*",
             "**/Update*",
-            "**/RoomRepository*",
-            "**/UserRepository*",
-            "**/BuildingRepository*",
             "**/model/**",
             "**/AuthViewModel_test*"
             // Add other excludes as needed
@@ -229,13 +225,9 @@ sonar {
             "**/BookingViewModel.*",
             "**/RoomViewModel.*",
             "**/BuildingViewModel.*",
-            "**/BookingRepository.*",
             "**/AuthViewModel_test*",
             "**/Create*.*",
             "**/Update*.*",
-            "**/RoomRepository.*",
-            "**/UserRepository.*",
-            "**/BuildingRepository.*",
             "**/model/**"
         ).joinToString(","))
 
