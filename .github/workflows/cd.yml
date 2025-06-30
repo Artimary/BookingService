@@ -54,7 +54,7 @@ jobs:
 
       - name: Upload to Object Storage
         run: |
-          yc storage s3 cp app-release.apk s3://***/releases/app-$(date +%Y%m%d-%H%M).apk --acl public-read
+          yc storage s3 cp app-release.apk s3://android-app-releases/releases/app-$(date +%Y%m%d-%H%M).apk --acl public-read
 
       - name: Generate download URL
         run: |
