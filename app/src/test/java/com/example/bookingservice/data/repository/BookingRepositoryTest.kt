@@ -63,7 +63,6 @@ class BookingRepositoryTest {
 
         // Assert
         assertTrue(result.isFailure)
-        // We can verify the error message contains expected content
         assertTrue(result.exceptionOrNull()?.message?.contains("not_found") == true)
     }
 
@@ -113,4 +112,57 @@ class BookingRepositoryTest {
         assertTrue(result.isFailure)
         assertEquals("Network error", result.exceptionOrNull()?.message)
     }
+
+    @Test
+    fun `getAllBookings should handle exceptions`() = runTest {
+        // Arrange
+        coEvery { mockBookingApi.getAllBookings() } throws Exception("Network timeout")
+
+        // Act
+        val result = bookingRepository.getBookings(testUserId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertEquals("Network timeout", result.exceptionOrNull()?.message)
+    }
+
+    @Test
+    fun `createBooking should handle exceptions`() = runTest {
+        // Arrange
+        coEvery {
+            mockBookingApi.createBooking(any())
+        } throws Exception("Connection error")
+
+        // Act
+        val result = bookingRepository.createBooking(
+            testUserId,
+            testRoomId,
+            "2025-07-01T10:00:00",
+            "2025-07-01T11:00:00"
+        )
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertEquals("Connection error", result.exceptionOrNull()?.message)
+    }
+
+//    @Test
+//    fun `modifyBooking should handle exceptions`() = runTest {
+//        // Arrange
+//        coEvery {
+//            mockBookingApi.updateBooking(any(), any())
+//        } throws Exception("Server error")
+//
+//        // Act
+//        val result = bookingRepository.modifyBooking(
+//            "booking123",
+//            testRoomId,
+//            "2025-07-01T10:00:00",
+//            "2025-07-01T11:00:00"
+//        )
+//
+//        // Assert
+//        assertTrue(result.isFailure)
+//        assertEquals("Server error", result.exceptionOrNull()?.message)
+//    }
 }

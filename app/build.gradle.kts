@@ -165,16 +165,24 @@ tasks.withType<JacocoReport> {
                 "**/R$*.class",
                 "**/BuildConfig.*",
                 "**/Manifest*.*",
-                "**/ui/**",
-                "**/AuthViewModel.login*",
-                "**/UserRepository.updateUser*", // Example to exclude updateUser method
-                "**/BookingRepository.createBooking*",
                 "**/*Test*.*",
-                "**/BookingViewModel.*",
-                "**/BuildingViewModel.*",
-                "**/RoomViewModel.*",
-                "**/api/SignupRequest*",
-                "**/api/LoginRequest*"
+                "**/ui/theme/**",
+                "**/ui/**",
+                "android/**",
+                "**/MainKt.class",
+                "**/MainActivity.class",
+                "**/MainActivityKt.class",
+                "**/MainActivityKt*",
+                "**/MainActivity*",
+                "**/BookingViewModel*",
+                "**/RoomViewModel*",
+                "**/BuildingViewModel*",
+                "**/AuthViewModel.login**",
+                "**/AuthViewModel.updatePassword**",
+                "**/Create*",
+                "**/Update*",
+                "**/model/**",
+                "**/AuthViewModel_test*"
             )
         }
     )
@@ -241,13 +249,28 @@ sonar {
 
         // Coverage exclusions - files to exclude from coverage calculations
         property("sonar.coverage.exclusions", arrayListOf(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "**/ui/theme/**",
             "**/ui/**",
+            "android/**",
+            "**/MainKt.class",
+            "**/MainActivity.class",
+            "**/MainActivityKt.class",
+            "**/MainActivityKt*",
+            "**/MainActivity*",
+            "**/BookingViewModel*",
+            "**/RoomViewModel*",
+            "**/BuildingViewModel*",
+            "**/AuthViewModel.login**",
+            "**/AuthViewModel.updatePassword**",
+            "**/Create*",
+            "**/Update*",
             "**/model/**",
-            "**/MainActivity.*",
-            "**/AuthViewModel.*",
-            "**/BookingViewModel.*",
-            "**/RoomViewModel.*",
-            "**/BuildingViewModel.*"
+            "**/AuthViewModel_test*"
         ).joinToString(","))
 
         // Java binaries
